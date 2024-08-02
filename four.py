@@ -37,13 +37,45 @@ def draw_heap(heap_root):
     nx.draw(heap, pos=pos, labels=labels, arrows=False, node_size=2500, node_color=colors)
     plt.show()
 
-# Створення купи (максимальна купа в цьому прикладі)
-root = Node(12, color="lightcoral")
-root.left = Node(10, color="lightgreen")
-root.right = Node(8, color="lightblue")
-root.left.left = Node(6, color="lightcoral")
-root.left.right = Node(4, color="lightgreen")
-root.right.left = Node(2, color="lightblue")
-root.right.right = Node(1, color="lightcoral")
+def heapify(arr, n, i):
+    largest = i
+    l = 2 * i + 1
+    r = 2 * i + 2
 
-draw_heap(root)
+    if l < n and arr[i] < arr[l]:
+        largest = l
+
+    if r < n and arr[largest] < arr[r]:
+        largest = r
+
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
+
+def build_heap(arr):
+    n = len(arr)
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+
+def array_to_heap_tree(arr):
+    if not arr:
+        return None
+    n = len(arr)
+    build_heap(arr)
+
+    nodes = [Node(arr[i], color=["lightcoral", "lightgreen", "lightblue", "lightcoral", "lightgreen", "lightblue", "lightcoral"][i]) for i in range(n)]
+    for i in range(n // 2):
+        if 2 * i + 1 < n:
+            nodes[i].left = nodes[2 * i + 1]
+        if 2 * i + 2 < n:
+            nodes[i].right = nodes[2 * i + 2]
+
+    return nodes[0]
+
+def main():
+    arr = [12, 10, 8, 6, 4, 2, 1]
+    root = array_to_heap_tree(arr)
+    draw_heap(root)
+
+if __name__ == "__main__":
+    main()
